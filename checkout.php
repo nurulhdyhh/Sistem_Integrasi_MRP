@@ -17,8 +17,12 @@ if (!isset($_SESSION["pelanggan"]) || !isset($_SESSION["pelanggan"]['id_pelangga
 $id_pelanggan = $_SESSION['pelanggan']['id_pelanggan'];
 $ambil_user = mysqli_query($db, "SELECT * FROM tbl_pelanggan WHERE id_pelanggan = '$id_pelanggan'");
 $data_user = mysqli_fetch_assoc($ambil_user);
-?>
 
+if (!$data_user) {
+    echo "<script>alert('Data pelanggan tidak ditemukan! Silakan login ulang.'); location='logout.php';</script>";
+    exit;
+}
+?>
 <style>
     .banner .img {
         width: 100%;
@@ -105,17 +109,14 @@ $data_user = mysqli_fetch_assoc($ambil_user);
                                 <label>No Telp</label>
                                 <input type="text" class="form-control" name="no_telp" value="<?= htmlspecialchars($data_user['no_telp']); ?>" required>
                             </div>
-                            <div class="form-group mb-3">
-                                <label>Provinsi</label>
-                                <select class="form-control" name="provinsi" id="provinsi" required onchange="updateOngkir()">
-                                    <option value="">-- Pilih Provinsi --</option>
-                                    <option value="Jawa Timur">Jawa Timur</option>
-                                    <option value="Jawa Tengah">Jawa Tengah</option>
-                                    <option value="Jawa Barat">Jawa Barat</option>
-                                    <option value="DKI Jakarta">DKI Jakarta</option>
-                                    <option value="Bali">Bali</option>
-                                    <option value="Luar Jawa">Luar Jawa</option>
+                            <div class="form-group">
+                                <label class="font-weight-bold">Provinsi</label>
+                                <select name="province_destination" id="province_destination"
+                                     class="all_province form-control" onchange="get_city_destination(this); updateOngkir();" required>
+                                    <option value="">Pilih Provinsi</option>
                                 </select>
+                                <input type="hidden" name="nama_provinsi" id="nama_provinsi">
+
                             </div>
 
                             <div class="form-group mb-3">
@@ -211,8 +212,10 @@ $data_user = mysqli_fetch_assoc($ambil_user);
                 </div>
 
                 <?php
-                $ongkir = 10000;
-                $total_pembayaran = $subtotal + $ongkir;
+               $nama_provinsi = isset($_POST['nama_provinsi']) ? strtolower($_POST['nama_provinsi']) : '';
+               $ongkir = ($nama_provinsi === 'jawa timur') ? 10000 : 25000;
+               $total_pembayaran = $subtotal + $ongkir;
+               
                 $konfirmasi_dp = $total_pembayaran * 0.5;
                 ?>
 
@@ -243,47 +246,104 @@ $data_user = mysqli_fetch_assoc($ambil_user);
 </div>
 
 <script>
-function toggleCustomUpload(show) {
-    const divUpload = document.getElementById('uploadCustomDiv');
-    divUpload.style.display = show ? 'block' : 'none';
-}
+    $(document).ready(function () {
+        $.getJSON("assets/checkout/province.php", function (all_province) {
+            if (all_province) {
+                $(".all_province").html("<option value=''>Pilih Provinsi</option>");
+                $.each(all_province['rajaongkir']['results'], function (key, value) {
+        $(".all_province").append(
+            "<option value='" + value.province_id + "' data-name='" + value.province + "'>" + value.province + "</option>"
+        );
+    });
 
-function toggleBankSelection() {
-    const pembayaran = document.getElementById('pembayaran').value;
-    const bankDiv = document.getElementById('bankDiv');
-    const namaBank = document.getElementById('nama_bank');
-    const btnPesan = document.getElementById('btnPesan');
-    const dpInfo = document.getElementById('dpInfo');
+            }
+        });
+    });
 
-    if (pembayaran === 'lunas' || pembayaran === 'dp') {
-        bankDiv.style.display = 'block';
-        namaBank.required = true;
-    } else {
-        bankDiv.style.display = 'none';
-        namaBank.required = false;
-        namaBank.value = '';
+    function get_city_destination(sel) {
+        $.getJSON("assets/checkout/city.php?id=" + sel.value, function (get_city) {
+            if (get_city) {
+                $("#city_destination").html("<option value=''>Pilih Kota</option>");
+                $.each(get_city['rajaongkir']['results'], function (key, value) {
+                    $("#city_destination").append(
+                        "<option value='" + value.city_id + "'>" + value.type + " - " + value
+                        .city_name + "</option>"
+                    );
+                });
+            }
+        });
+    }
+</script>
+
+<script>
+function updateOngkir() {
+    const provinsiSelect = document.getElementById('province_destination');
+    const selectedOption = provinsiSelect.options[provinsiSelect.selectedIndex];
+    const namaProvinsi = selectedOption.getAttribute('data-name');
+    document.getElementById('nama_provinsi').value = namaProvinsi;
+
+    let ongkir = 25000;
+    if (namaProvinsi && namaProvinsi.toLowerCase() === 'jawa timur') {
+        ongkir = 10000;
     }
 
+    const subtotal = <?= $subtotal ?>;
+    const total = subtotal + ongkir;
+    const dp = total * 0.5;
+
+    document.getElementById('ongkirDisplay').innerText = "Rp. " + ongkir.toLocaleString('id-ID');
+    document.getElementById('totalDisplay').innerText = "Rp. " + total.toLocaleString('id-ID');
+
+    const pembayaran = document.getElementById('pembayaran').value;
+    const dpInfo = document.getElementById('dpInfo');
     if (pembayaran === 'dp') {
         dpInfo.style.display = 'block';
+        dpInfo.querySelector('strong').innerText = "Rp. " + dp.toLocaleString('id-ID');
     } else {
         dpInfo.style.display = 'none';
     }
 
-    // Aktifkan tombol hanya jika metode pembayaran sudah dipilih dan bank sudah diisi jika diperlukan
-    if (pembayaran === '') {
-        btnPesan.disabled = true;
-    } else if ((pembayaran === 'lunas' || pembayaran === 'dp') && namaBank.value === '') {
-        btnPesan.disabled = true;
+    validateForm(); // Perbarui status tombol Pesan
+}
+
+function toggleBankSelection() {
+    const metode = document.getElementById("pembayaran").value;
+    const bankDiv = document.getElementById("bankDiv");
+    const dpInfo = document.getElementById("dpInfo");
+    if (metode === "lunas" || metode === "dp") {
+        bankDiv.style.display = "block";
+        if (metode === "dp") {
+            dpInfo.style.display = "block";
+        } else {
+            dpInfo.style.display = "none";
+        }
     } else {
+        bankDiv.style.display = "none";
+        dpInfo.style.display = "none";
+    }
+    updateOngkir();
+}
+
+function toggleCustomUpload(status) {
+    document.getElementById('uploadCustomDiv').style.display = status ? 'block' : 'none';
+}
+
+function validateForm() {
+    const pembayaran = document.getElementById('pembayaran').value;
+    const provinsi = document.getElementById('province_destination').value;
+    const btnPesan = document.getElementById('btnPesan');
+
+    if (pembayaran !== "" && provinsi !== "") {
         btnPesan.disabled = false;
+    } else {
+        btnPesan.disabled = true;
     }
 }
 
-document.getElementById('nama_bank').addEventListener('change', toggleBankSelection);
-window.onload = function() {
-    toggleBankSelection();
-};
+document.getElementById('province_destination').addEventListener('change', validateForm);
+document.getElementById('pembayaran').addEventListener('change', validateForm);
+</script>
+
 </script>
 
 <?php 
@@ -293,7 +353,7 @@ if (isset($_POST['pesan'])) {
     $nama = mysqli_real_escape_string($db, $_POST['nama']);
     $no_telp = mysqli_real_escape_string($db, $_POST['no_telp']);
     $pembayaran = $_POST['pembayaran'];
-    $provinsi = $_POST['provinsi'];
+    $provinsi = $_POST['province_destination'];
     $nama_bank = isset($_POST['nama_bank']) ? $_POST['nama_bank'] : '';
     $custom = isset($_POST['custom']) ? $_POST['custom'] : 'tidak';
 

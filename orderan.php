@@ -78,31 +78,24 @@ if (mysqli_num_rows($result) == 0) {
 ?>
 
 <style>
-  /* Lebarkan container pembungkus dan tambahkan padding */
   .container-fluid.bg-white {
     max-width: 100% !important;
     padding-left: 20px;
     padding-right: 20px;
   }
-
-  /* Membuat tabel bisa scroll horizontal jika kurang lebar */
   .table-responsive {
     overflow-x: auto;
   }
-
-  /* Set minimal lebar tabel supaya kolom-kolom lega */
   #datatable {
     min-width: 1200px;
   }
-
-  /* Minimal lebar tiap kolom penting */
-  #datatable th:nth-child(3), #datatable td:nth-child(3), /* Jumlah */
-  #datatable th:nth-child(4), #datatable td:nth-child(4), /* Bank */
-  #datatable th:nth-child(5), #datatable td:nth-child(5), /* Metode */
-  #datatable th:nth-child(6), #datatable td:nth-child(6), /* Status */
-  #datatable th:nth-child(7), #datatable td:nth-child(7), /* Total Harga */
-  #datatable th:nth-child(8), #datatable td:nth-child(8), /* Total DP */
-  #datatable th:nth-child(9), #datatable td:nth-child(9)  /* Aksi */
+  #datatable th:nth-child(3), #datatable td:nth-child(3),
+  #datatable th:nth-child(4), #datatable td:nth-child(4),
+  #datatable th:nth-child(5), #datatable td:nth-child(5),
+  #datatable th:nth-child(6), #datatable td:nth-child(6),
+  #datatable th:nth-child(7), #datatable td:nth-child(7),
+  #datatable th:nth-child(8), #datatable td:nth-child(8),
+  #datatable th:nth-child(9), #datatable td:nth-child(9)
   {
     min-width: 130px;
   }
@@ -137,123 +130,121 @@ if (mysqli_num_rows($result) == 0) {
                     <tbody>
                         <?php 
                         $no = 1;
-                       while ($data = mysqli_fetch_assoc($result)) {
-    $id_order = $data['id_order'];
-    $tgl = $data['tgl_order'];
-    $status = $data['status'];
-    $nama_bank = $data['nama_bank'];
-    $metode = $data['metode_bayar'];
-    $total_order = $data['total_order']; // Total harga produk saja
-    $ongkir = $data['ongkir']; // Asumsi ada kolom ongkir di tbl_order
+                        while ($data = mysqli_fetch_assoc($result)) {
+                            $id_order = $data['id_order'];
+                            $tgl = $data['tgl_order'];
+                            $status = $data['status'];
+                            $nama_bank = $data['nama_bank'];
+                            $metode = $data['metode_bayar'];
+                            $total_order = (float)$data['total_order'];
+                            $ongkir = (float)$data['ongkir'];
 
-    // Atur nama bank
-    if ($metode == 'postpaid') {
-        $nama_bank = 'COD';
-    }
+                            if ($metode == 'postpaid') {
+                                $nama_bank = 'COD';
+                            }
 
-    // Hitung jumlah produk
-    $query2 = "SELECT SUM(jml_order) AS jml FROM tbl_detail_order WHERE id_order='$id_order'";
-    $result2 = mysqli_query($db, $query2);
-    $data2 = mysqli_fetch_assoc($result2);
+                            // Hitung jumlah produk
+                            $query2 = "SELECT SUM(jml_order) AS jml FROM tbl_detail_order WHERE id_order='$id_order'";
+                            $result2 = mysqli_query($db, $query2);
+                            $data2 = mysqli_fetch_assoc($result2);
 
-    // Hitung total harga (produk + ongkir)
-    $total_harga = $total_order + $ongkir;
+                            // Total harga = produk + ongkir
+                            $total_harga = $total_order + $ongkir;
 
-    // Hitung Total DP (50% dari total harga jika metode DP)
-    $total_dp = '-';
-    if (strtoupper($metode) == 'DP') {
-        $total_dp = $total_harga * 0.5;
-    }
-?>
-<tr>
-    <td><?= $no++ ?></td>
-    <td><?= date("d F Y", strtotime($tgl)); ?></td>
-    <td>
-        <?= $data2['jml'] ?> Produk | 
-        <a href="rincian-produk.php?id=<?= $id_order; ?>" class="badge badge-info">Lihat</a>
-    </td>
-    <td><?= $nama_bank ?: '-'; ?></td>
-    <td><?= $metode; ?></td>
-    <td class="text-center">
-        <?php 
-        if ($status == 'Belum Dibayar') {
-            echo "<span class='badge badge-warning'>$status</span>";
-        } elseif ($status == 'Sudah Dibayar') {
-            echo "<span class='badge badge-secondary'>$status</span>";
-        } elseif ($status == 'Menyiapkan Produk') {
-            echo "<span class='badge badge-info'>$status</span>";
-        } elseif ($status == 'Produk Dikirim') {
-            echo "<span class='badge badge-danger'>$status</span><br>";
-            echo "<span style='font-size: small;'>Resi: ".$data['no_resi']."</span>";
-        } elseif ($status == 'Produk Diterima') {
-            echo "<span class='badge badge-success'>$status</span>";
-        } elseif ($status == 'Pesanan Ditolak') {
-            echo "<span class='badge badge-dark'>$status</span>";
-        } elseif ($status == 'Pesanan Dibatalkan') {
-            echo "<span class='badge badge-danger'>$status</span>";
-        }
-        ?>
-    </td>
-    <td>Rp. <?= number_format($total_harga); ?></td>
-    <td>
-        <?= $total_dp === '-' ? '-' : 'Rp. ' . number_format($total_dp); ?>
-    </td>
-    <td class="text-left">
-        <?php 
-        if ($status == 'Belum Dibayar') {
-            if ($metode == 'postpaid') {
-                echo "<a href='nota-order.php?id=$id_order' class='btn btn-secondary btn-sm'>Lihat Nota</a> ";
-                echo "<a href='orderan.php?cancel=$id_order' class='btn btn-danger btn-sm'>Cancel</a>";
-            } else {
-                echo "<a href='konfirmasi-pembayaran.php?id=$id_order' class='btn btn-warning btn-sm'>Konfirmasi Pembayaran</a> ";
-                echo "<a href='orderan.php?cancel=$id_order' class='btn btn-danger btn-sm'>Cancel</a>";
-            }
-        } elseif (in_array($status, ['Sudah Dibayar', 'Menyiapkan Produk'])) {
-            echo "<a href='nota-order.php?id=$id_order' class='btn btn-secondary btn-sm'>Lihat Nota</a>";
-        } elseif ($status == 'Produk Dikirim') {
-            echo "<a href='javascript:void(0)' onclick='validate$id_order()' class='btn btn-success btn-sm'>Konfirmasi Pesanan</a>";
-            ?>
-            <script>
-                function validate<?= $id_order ?>() {
-                    swal({
-                        title: "Konfirmasi Pesanan",
-                        text: "Apakah Anda sudah menerima produk ini?",
-                        icon: "warning",
-                        buttons: true,
-                        dangerMode: false,
-                    }).then((willConfirm) => {
-                        if (willConfirm) {
-                            window.location.href = "orderan.php?konfirmasi=<?= $id_order ?>";
-                        }
-                    });
-                }
-            </script>
-            <?php
-        } elseif ($status == 'Produk Diterima') {
-            echo "<a href='nota-order.php?id=$id_order' class='btn btn-secondary btn-sm mb-1'>Lihat Nota</a><br>";
-            $feedback_ditampilkan = false;
-            $produk_dalam_order = mysqli_query($db, "
-                SELECT d.id_produk, p.nm_produk
-                FROM tbl_detail_order d
-                JOIN tbl_produk p ON d.id_produk = p.id_produk
-                WHERE d.id_order = '$id_order'
-            ");
-            while ($produk = mysqli_fetch_assoc($produk_dalam_order)) {
-                if (!$feedback_ditampilkan) {
-                    echo "<div class='mb-1'>";
-                    echo "<a href='feedback.php?id_order=$id_order&id_produk=" . $produk['id_produk'] . "' class='btn btn-sm btn-primary'>Feedback</a>";
-                    echo "</div>";
-                    $feedback_ditampilkan = true;
-                }
-            }
-        } elseif (in_array($status, ['Pesanan Ditolak', 'Pesanan Dibatalkan'])) {
-            echo "<span class='text-muted'>Tidak ada aksi</span>";
-        }
-        ?>
-    </td>
-</tr>
-<?php } ?>
-
+                            $total_dp = '-';
+                            if (strtolower($metode) == 'dp') {
+                                $konfirmasi_dp = (float)$data['konfirmasi_dp'];
+                                if ($konfirmasi_dp > 0) {
+                                    $total_dp = $konfirmasi_dp;
+                                } else {
+                                    $total_dp = $total_harga * 0.5;
+                                }
+                            }
+                            
+                        ?>
+                        <tr>
+                            <td><?= $no++ ?></td>
+                            <td><?= date("d F Y", strtotime($tgl)); ?></td>
+                            <td>
+                                <?= $data2['jml'] ?> Produk | 
+                                <a href="rincian-produk.php?id=<?= $id_order; ?>" class="badge badge-info">Lihat</a>
+                            </td>
+                            <td><?= $nama_bank ?: '-'; ?></td>
+                            <td><?= $metode; ?></td>
+                            <td class="text-center">
+                                <?php 
+                                switch ($status) {
+                                    case 'Belum Dibayar': echo "<span class='badge badge-warning'>$status</span>"; break;
+                                    case 'Sudah Dibayar': echo "<span class='badge badge-secondary'>$status</span>"; break;
+                                    case 'Menyiapkan Produk': echo "<span class='badge badge-info'>$status</span>"; break;
+                                    case 'Produk Dikirim': 
+                                        echo "<span class='badge badge-danger'>$status</span><br>";
+                                        echo "<span style='font-size: small;'>Resi: ".$data['no_resi']."</span>";
+                                        break;
+                                    case 'Produk Diterima': echo "<span class='badge badge-success'>$status</span>"; break;
+                                    case 'Pesanan Ditolak': echo "<span class='badge badge-dark'>$status</span>"; break;
+                                    case 'Pesanan Dibatalkan': echo "<span class='badge badge-danger'>$status</span>"; break;
+                                    default: echo "<span class='badge badge-secondary'>$status</span>";
+                                }
+                                ?>
+                            </td>
+                            <td>Rp. <?= number_format($total_harga, 0, ',', '.'); ?></td>
+                            <td><?= $total_dp === '-' ? '-' : 'Rp. ' . number_format($total_dp, 0, ',', '.'); ?></td>
+                            <td class="text-left">
+                                <?php 
+                                if ($status == 'Belum Dibayar') {
+                                    if ($metode == 'postpaid') {
+                                        echo "<a href='nota-order.php?id=$id_order' class='btn btn-secondary btn-sm'>Lihat Nota</a> ";
+                                        echo "<a href='orderan.php?cancel=$id_order' class='btn btn-danger btn-sm'>Cancel</a>";
+                                    } else {
+                                        echo "<a href='konfirmasi-pembayaran.php?id=$id_order' class='btn btn-warning btn-sm'>Konfirmasi Pembayaran</a> ";
+                                        echo "<a href='orderan.php?cancel=$id_order' class='btn btn-danger btn-sm'>Cancel</a>";
+                                    }
+                                } elseif (in_array($status, ['Sudah Dibayar', 'Menyiapkan Produk'])) {
+                                    echo "<a href='nota-order.php?id=$id_order' class='btn btn-secondary btn-sm'>Lihat Nota</a>";
+                                } elseif ($status == 'Produk Dikirim') {
+                                    echo "<a href='javascript:void(0)' onclick='validate$id_order()' class='btn btn-success btn-sm'>Konfirmasi Pesanan</a>";
+                                    ?>
+                                    <script>
+                                        function validate<?= $id_order ?>() {
+                                            swal({
+                                                title: "Konfirmasi Pesanan",
+                                                text: "Apakah Anda sudah menerima produk ini?",
+                                                icon: "warning",
+                                                buttons: true,
+                                                dangerMode: false,
+                                            }).then((willConfirm) => {
+                                                if (willConfirm) {
+                                                    window.location.href = "orderan.php?konfirmasi=<?= $id_order ?>";
+                                                }
+                                            });
+                                        }
+                                    </script>
+                                    <?php
+                                } elseif ($status == 'Produk Diterima') {
+                                    echo "<a href='nota-order.php?id=$id_order' class='btn btn-secondary btn-sm mb-1'>Lihat Nota</a><br>";
+                                    $feedback_ditampilkan = false;
+                                    $produk_dalam_order = mysqli_query($db, "
+                                        SELECT d.id_produk, p.nm_produk
+                                        FROM tbl_detail_order d
+                                        JOIN tbl_produk p ON d.id_produk = p.id_produk
+                                        WHERE d.id_order = '$id_order'
+                                    ");
+                                    while ($produk = mysqli_fetch_assoc($produk_dalam_order)) {
+                                        if (!$feedback_ditampilkan) {
+                                            echo "<div class='mb-1'>";
+                                            echo "<a href='feedback.php?id_order=$id_order&id_produk=" . $produk['id_produk'] . "' class='btn btn-sm btn-primary'>Feedback</a>";
+                                            echo "</div>";
+                                            $feedback_ditampilkan = true;
+                                        }
+                                    }
+                                } elseif (in_array($status, ['Pesanan Ditolak', 'Pesanan Dibatalkan'])) {
+                                    echo "<span class='text-muted'>Tidak ada aksi</span>";
+                                }
+                                ?>
+                            </td>
+                        </tr>
+                        <?php } ?>
                     </tbody>
                 </table>
             </div> <!-- /.table-responsive -->
