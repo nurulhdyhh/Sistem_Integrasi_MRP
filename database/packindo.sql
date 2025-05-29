@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 26, 2025 at 08:33 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Generation Time: May 29, 2025 at 10:08 AM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.1.17
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -102,7 +102,27 @@ INSERT INTO `tbl_detail_order` (`id_detail_order`, `id_order`, `id_produk`, `nm_
 (37, '26', 'PRD-002', 'Avico Thermometer Digital Flexible Tip - APST', 20000, 1, 100, 100, 20000, NULL),
 (38, '27', 'PRD-003', 'Walker Alat Bantu Jalan ', 300000, 1, 2000, 2000, 300000, NULL),
 (39, '28', 'PRD-004', 'Gluco Dr Biosensor AGM 2100 ', 100000, 1, 250, 250, 100000, NULL),
-(40, '29', 'PRD-008', 'Beurer FT 85 Infrared Non Contact Thermometer - AP', 800000, 1, 300, 300, 800000, NULL);
+(40, '29', 'PRD-008', 'Beurer FT 85 Infrared Non Contact Thermometer - AP', 800000, 1, 300, 300, 800000, NULL),
+(41, '33', 'PRD-025', 'Sleeve', 2500, 3, 2, 6, 7500, NULL),
+(42, '34', 'PRD-025', 'Sleeve', 2500, 4, 2, 8, 10000, NULL),
+(43, '35', 'PRD-022', 'Timbangan Digital Omron HN 289 ', 300000, 1, 500, 500, 300000, NULL),
+(44, '35', 'PRD-025', 'Sleeve', 2500, 1, 2, 2, 2500, NULL),
+(45, '36', 'PRD-025', 'Sleeve', 2500, 1, 2, 2, 2500, '1748267467_PRD-025.png'),
+(46, '37', 'PRD-025', 'Sleeve', 2500, 1, 2, 2, 2500, NULL),
+(47, '38', 'PRD-022', 'Timbangan Digital Omron HN 289 ', 300000, 1, 500, 500, 300000, NULL),
+(48, '39', 'PRD-025', 'Sleeve', 2500, 7, 2, 14, 17500, NULL),
+(49, '40', 'PRD-022', 'Timbangan Digital Omron HN 289 ', 300000, 1, 500, 500, 300000, NULL),
+(50, '41', 'PRD-024', 'Promag', 120000, 1, 20, 20, 120000, NULL),
+(51, '42', 'PRD-025', 'Sleeve', 2500, 9, 2, 18, 22500, NULL),
+(52, '43', 'PRD-022', 'Timbangan Digital Omron HN 289 ', 300000, 1, 500, 500, 300000, NULL),
+(53, '44', 'PRD-025', 'Sleeve', 2500, 2, 2, 4, 5000, NULL),
+(54, '44', 'PRD-023', 'Paracetamol 500 mg 10 Kaplet', 5000, 1, 5, 5, 5000, NULL),
+(55, '45', 'PRD-024', 'Promag', 120000, 1, 20, 20, 120000, NULL),
+(56, '45', 'PRD-025', 'Sleeve', 2500, 1, 2, 2, 2500, NULL),
+(57, '45', 'PRD-022', 'Timbangan Digital Omron HN 289 ', 300000, 1, 500, 500, 300000, NULL),
+(58, '46', 'PRD-022', 'Timbangan Digital Omron HN 289 ', 300000, 1, 500, 500, 300000, NULL),
+(59, '47', 'PRD-023', 'Paracetamol 500 mg 10 Kaplet', 5000, 1, 5, 5, 5000, NULL),
+(60, '48', 'PRD-025', 'Sleeve', 2500, 10, 2, 20, 25000, NULL);
 
 -- --------------------------------------------------------
 
@@ -131,6 +151,24 @@ INSERT INTO `tbl_feedback` (`id_feedback`, `id_pelanggan`, `id_order`, `id_produ
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_kategori`
+--
+
+CREATE TABLE `tbl_kategori` (
+  `id_kategori` int(11) NOT NULL,
+  `nama_kategori` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_kategori`
+--
+
+INSERT INTO `tbl_kategori` (`id_kategori`, `nama_kategori`) VALUES
+(1, 'Toko Kantong Plastik');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_kat_produk`
 --
 
@@ -152,7 +190,32 @@ INSERT INTO `tbl_kat_produk` (`id_kategori`, `nm_kategori`) VALUES
 ('KTR-006', 'Alat Cek Asam Urat'),
 ('KTR-007', 'Timbangan Badan'),
 ('KTR-008', 'Obat Pribadi'),
-('KTR-009', 'Toko Gelas Cup');
+('KTR-009', 'Toko Gelas Cup'),
+('KTR-010', 'Toko Kertas Kraft');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_master_produk`
+--
+
+CREATE TABLE `tbl_master_produk` (
+  `ms_id_produk` int(11) NOT NULL,
+  `ms_nm_produk` varchar(255) NOT NULL,
+  `ms_harga` decimal(15,2) NOT NULL,
+  `ms_stok` int(11) NOT NULL DEFAULT 0,
+  `ms_berat` int(11) NOT NULL DEFAULT 0,
+  `ms_gambar` varchar(255) DEFAULT NULL,
+  `ms_deskripsi` text DEFAULT NULL,
+  `ms_id_kategori` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tbl_master_produk`
+--
+
+INSERT INTO `tbl_master_produk` (`ms_id_produk`, `ms_nm_produk`, `ms_harga`, `ms_stok`, `ms_berat`, `ms_gambar`, `ms_deskripsi`, `ms_id_kategori`) VALUES
+(1, 'Kresek Bening', 10000.00, 24, 2, 'CLD.jpg', 'Ayo dibeli ya', 1);
 
 -- --------------------------------------------------------
 
@@ -176,31 +239,37 @@ CREATE TABLE `tbl_order` (
   `no_resi` varchar(100) DEFAULT NULL,
   `barang_custom` enum('iya','tidak') DEFAULT 'tidak',
   `gambar_custom` varchar(255) DEFAULT NULL,
-  `konfirmasi_dp` decimal(15,2) DEFAULT 0.00
+  `konfirmasi_dp` decimal(15,2) DEFAULT 0.00,
+  `provinsi` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tbl_order`
 --
 
-INSERT INTO `tbl_order` (`id_order`, `id_pelanggan`, `nm_penerima`, `telp`, `alamat`, `metode_bayar`, `nama_bank`, `paypal_id`, `tgl_order`, `total_order`, `ongkir`, `status`, `no_resi`, `barang_custom`, `gambar_custom`, `konfirmasi_dp`) VALUES
-(3, 'USR-001', 'filda', '085232126385', 'Lamongan Jati Geger no.19', 'prepaid', 'BCA', '121019', '2025-04-21', 385000.00, '38500', 'Produk Diterima', 'RESI00001', 'tidak', NULL, 0.00),
-(4, 'USR-002', 'ririn', '085199712322', 'IKIP Gunung Anyar A-12', 'postpaid', 'COD', '131018', '2025-04-21', 1500000.00, '150000', 'Pesanan Dibatalkan', NULL, 'tidak', NULL, 0.00),
-(5, 'USR-003', 'bomi', '082167553190', 'Jl Veteran No.89', 'prepaid', 'BRI', '141017', '2025-04-21', 150000.00, '15000', 'Pesanan Dibatalkan', NULL, 'tidak', NULL, 0.00),
-(6, 'USR-003', 'bomi', '082167553190', 'Jl Veteran No.89', 'postpaid', 'COD', '141017', '2025-04-21', 100000.00, '10000', 'Produk Diterima', 'RESI00002', 'tidak', NULL, 0.00),
-(8, 'USR-004', 'yisti', '085232126385', 'Medokan Asri Barat', 'prepaid', 'BCA', '121016', '2025-04-21', 2040000.00, '204000', 'Sudah Dibayar', NULL, 'tidak', NULL, 0.00),
-(9, 'USR-004', 'yisti', '085232126385', 'Medokan Asri Barat', 'prepaid', 'BCA', '121016', '2025-04-21', 50000.00, '5000', 'Belum Dibayar', NULL, 'tidak', NULL, 0.00),
-(10, 'USR-001', 'filda', '085232126385', 'Lamongan Jati Geger no.19', 'postpaid', 'COD', '121019', '2025-05-22', 750000.00, '75000', 'Belum Dibayar', NULL, 'tidak', NULL, 0.00),
-(11, 'USR-001', 'filda', '085232126385', 'Lamongan Jati Geger no.19', 'prepaid', 'BCA', '121019', '2025-05-22', 800000.00, '80000', 'Pesanan Dibatalkan', NULL, 'tidak', NULL, 0.00),
-(12, 'USR-001', 'filda', '085232126385', 'Lamongan Jati Geger no.19', 'prepaid', 'BRI', '121019', '2025-05-22', 850000.00, '85000', 'Produk Diterima', 'RS000014', 'tidak', NULL, 0.00),
-(13, 'USR-001', 'filda', '085232126385', 'Lamongan Jati Geger no.19', 'postpaid', 'COD', '121019', '2025-05-22', 1500000.00, '150000', 'Belum Dibayar', NULL, 'tidak', NULL, 0.00),
-(14, 'USR-001', 'filda', '085232126385', 'Lamongan Jati Geger no.19', 'postpaid', 'COD', '121019', '2025-05-25', 2150000.00, '215000', 'Belum Dibayar', NULL, 'tidak', NULL, 0.00),
-(15, 'USR-001', 'filda', '085232126385', 'Lamongan Jati Geger no.19', 'postpaid', 'COD', '121019', '2025-05-25', 300000.00, '30000', 'Belum Dibayar', NULL, 'tidak', NULL, 0.00),
-(16, 'USR-001', 'filda', '085232126385', 'Lamongan Jati Geger no.19', 'prepaid', 'BRI', '121019', '2025-05-25', 200000.00, '20000', 'Belum Dibayar', NULL, 'tidak', NULL, 0.00),
-(26, 'USR-001', 'filda', '085232126385', 'Lamongan Jati Geger no.19', 'dp', 'BCA', '121019', '2025-05-26', 20000.00, '10000', 'Sudah Dibayar', NULL, 'tidak', '', 15000.00),
-(27, 'USR-001', 'filda', '085232126385', 'Lamongan Jati Geger no.19', 'dp', 'BRI', '121019', '2025-05-26', 300000.00, '10000', 'Sudah Dibayar', NULL, 'tidak', 'uploads/1748232614_order.png', 155000.00),
-(28, 'USR-001', 'filda', '085232126385', 'Lamongan Jati Geger no.19', 'lunas', 'MANDIRI', '121019', '2025-05-26', 100000.00, '10000', 'Belum Dibayar', NULL, 'tidak', '', 0.00),
-(29, 'USR-001', 'filda', '085232126385', 'Lamongan Jati Geger no.19', 'lunas', 'BCA', '121019', '2025-05-26', 800000.00, '10000', 'Sudah Dibayar', NULL, 'tidak', '', 0.00);
+INSERT INTO `tbl_order` (`id_order`, `id_pelanggan`, `nm_penerima`, `telp`, `alamat`, `metode_bayar`, `nama_bank`, `paypal_id`, `tgl_order`, `total_order`, `ongkir`, `status`, `no_resi`, `barang_custom`, `gambar_custom`, `konfirmasi_dp`, `provinsi`) VALUES
+(27, 'USR-001', 'filda', '085232126385', 'Lamongan Jati Geger no.19', 'dp', 'BRI', '121019', '2025-05-26', 300000.00, '10000', 'Produk Diterima', '789', 'tidak', 'uploads/1748232614_order.png', 155000.00, NULL),
+(28, 'USR-001', 'filda', '085232126385', 'Lamongan Jati Geger no.19', 'lunas', 'MANDIRI', '121019', '2025-05-26', 100000.00, '10000', 'Produk Diterima', '9087', 'tidak', '', 0.00, NULL),
+(29, 'USR-001', 'filda', '085232126385', 'Lamongan Jati Geger no.19', 'lunas', 'BCA', '121019', '2025-05-26', 800000.00, '10000', 'Pesanan Ditolak', NULL, 'tidak', '', 0.00, NULL),
+(30, 'USR-003', 'bomi', '082167553190', 'Jl Veteran No.89', 'lunas', 'BRI', '141017', '2025-05-26', 17500.00, '10000', 'pending', NULL, 'iya', NULL, 0.00, 'DKI Jakarta'),
+(31, 'USR-003', 'bomi', '082167553190', 'Jl Veteran No.89', 'lunas', 'BRI', '141017', '2025-05-26', 17500.00, '10000', 'pending', NULL, 'iya', NULL, 0.00, 'DKI Jakarta'),
+(32, 'USR-003', 'bomi', '082167553190', 'Jl Veteran No.89', 'dp', 'BRI', '141017', '2025-05-26', 17500.00, '10000', 'pending', NULL, 'tidak', NULL, 0.00, 'Jawa Barat'),
+(33, 'USR-003', 'bomi', '082167553190', 'Jl Veteran No.89', 'dp', 'BRI', '141017', '2025-05-26', 17500.00, '10000', 'pending', NULL, 'tidak', NULL, 0.00, 'Jawa Barat'),
+(34, 'USR-003', 'bomi', '082167553190', 'Jl Veteran No.89', 'lunas', 'BRI', '141017', '2025-05-26', 20000.00, '10000', 'pending', NULL, 'tidak', NULL, 0.00, 'Jawa Timur'),
+(35, 'USR-003', 'bomi', '082167553190', 'Jl Veteran No.89', 'lunas', 'MANDIRI', '141017', '2025-05-26', 312500.00, '10000', 'pending', NULL, 'tidak', NULL, 0.00, 'Jawa Tengah'),
+(36, 'USR-003', 'bomi', '082167553190', 'Jl Veteran No.89', 'dp', 'BRI', '141017', '2025-05-26', 12500.00, '10000', 'pending', NULL, 'iya', NULL, 0.00, 'Jawa Timur'),
+(37, 'USR-003', 'bomi', '082167553190', 'Jl Veteran No.89', 'dp', 'BRI', '141017', '2025-05-26', 12500.00, '10000', 'pending', NULL, 'tidak', NULL, 0.00, 'Jawa Timur'),
+(38, 'USR-003', 'bomi', '082167553190', 'Jl Veteran No.89', 'lunas', 'BCA', '141017', '2025-05-26', 310000.00, '10000', 'pending', NULL, 'tidak', NULL, 0.00, 'Jawa Timur'),
+(39, 'USR-003', 'bomi', '082167553190', 'Jl Veteran No.89', 'dp', 'BRI', '141017', '2025-05-26', 27500.00, '10000', 'pending', NULL, 'tidak', NULL, 0.00, 'Jawa Tengah'),
+(40, 'USR-003', 'bomi', '082167553190', 'Jl Veteran No.89', 'dp', 'BRI', '141017', '2025-05-26', 310000.00, '10000', 'Belum Dibayar', NULL, 'tidak', NULL, 0.00, 'Jawa Tengah'),
+(41, 'USR-003', 'bomi', '082167553190', 'Jl Veteran No.89', 'dp', 'MANDIRI', '141017', '2025-05-26', 130000.00, '10000', 'Belum Dibayar', NULL, 'tidak', NULL, 0.00, 'Jawa Timur'),
+(42, 'USR-003', 'bomi', '082167553190', 'Jl Veteran No.89', 'dp', 'BCA', '141017', '2025-05-26', 32500.00, '10000', 'Produk Diterima', '908765467', 'tidak', NULL, 0.00, 'Jawa Timur'),
+(43, 'USR-001', 'filda', '085232126385', 'Lamongan Jati Geger no.19', 'dp', 'BRI', '121019', '2025-05-27', 310000.00, '10000', 'Sudah Dibayar', NULL, 'tidak', NULL, 0.00, 'Bali'),
+(44, 'USR-001', 'filda', '085232126385', 'Lamongan Jati Geger no.19', 'dp', 'BRI', '121019', '2025-05-27', 20000.00, '10000', 'Produk Diterima', '09879876', 'tidak', NULL, 0.00, 'Jawa Timur'),
+(45, 'USR-001', 'filda', '085232126385', 'Lamongan Jati Geger no.19', 'dp', 'BRI', '121019', '2025-05-29', 432500.00, '10000', 'Sudah Dibayar', NULL, 'tidak', NULL, 0.00, '18'),
+(46, 'USR-001', 'filda', '085232126385', 'Lamongan Jati Geger no.19', 'dp', 'BRI', '121019', '2025-05-29', 310000.00, '10000', 'Sudah Dibayar', NULL, 'tidak', NULL, 0.00, '11'),
+(47, 'USR-001', 'filda', '085232126385', 'Lamongan Jati Geger no.19', 'lunas', 'BRI', '121019', '2025-05-29', 15000.00, '10000', 'Sudah Dibayar', NULL, 'tidak', NULL, 0.00, '13'),
+(48, 'USR-001', 'filda', '085232126385', 'Lamongan Jati Geger no.19', 'lunas', 'BRI', '121019', '2025-05-29', 35000.00, '10000', 'Produk Diterima', '98087678', 'tidak', NULL, 0.00, '11');
 
 -- --------------------------------------------------------
 
@@ -256,7 +325,14 @@ INSERT INTO `tbl_pembayaran` (`id_pembayaran`, `id_order`, `jml_pembayaran`, `tg
 (5, '12', 935000.00, '2025-05-22'),
 (6, '26', 15000.00, '2025-05-26'),
 (7, '27', 155000.00, '2025-05-26'),
-(8, '29', 800000.00, '2025-05-26');
+(8, '29', 800000.00, '2025-05-26'),
+(9, '42', 16250.00, '2025-05-26'),
+(10, '43', 155000.00, '2025-05-27'),
+(11, '44', 10000.00, '2025-05-27'),
+(12, '45', 216250.00, '2025-05-29'),
+(13, '46', 155000.00, '2025-05-29'),
+(14, '48', 35000.00, '2025-05-29'),
+(15, '47', 15000.00, '2025-05-29');
 
 -- --------------------------------------------------------
 
@@ -281,8 +357,7 @@ CREATE TABLE `tbl_produk` (
 
 INSERT INTO `tbl_produk` (`id_produk`, `id_kategori`, `nm_produk`, `berat`, `harga`, `stok`, `gambar`, `deskripsi`) VALUES
 ('PRD-022', 'KTR-007', 'Timbangan Digital Omron HN 289 ', 500, 300000, 40, 'timbangan1.jpg', 'Timbangan Omron HN-289 merupakan timbangan badan digital yang menggunakan 4 sensor untuk mendapatkan hasil pengukuran berat badan yang akurat dengan tingkat presisi yang tinggi. Dengan layar LCD yang besar memudahkan untuk membaca hasil pengukuran berat badan antara 5 Kg sampai dengan 150 Kg (dengan penambahan sebesar 100g), sehingga bahkan perubahan berat yang kecil dapat terdeteksi. Timbangan Omron HN-289 merupakan alat bantu untuk memonitor berat badan secara mudah dan akurat.'),
-('PRD-023', 'KTR-008', 'Paracetamol 500 mg 10 Kaplet', 5, 5000, 0, 'paracetamol.png', 'PARACETAMOL TABLET merupakan obat yang dapat digunakan untuk meringankan rasa sakit pada sakit kepala, sakit gigi, dan menurunkan demam. Paracetamol bekerja pada pusat pengatur suhu di hipotalamus untuk menurunkan suhu,fubuh (antipiretik) serta menghambat sintesis prostaglandin sehingga dapat mengurangi nyeri ringan sampai sedang (analgesik).'),
-('PRD-024', 'KTR-008', 'Promag', 20, 120000, 0, 'order.png', 'Obat maagh paling ampuh');
+('PRD-025', 'KTR-010', 'Sleeve', 2, 2500, 75, 'output.png', 'Bisa custom full warna. Tersedia warna coklat dan putih.');
 
 --
 -- Indexes for dumped tables
@@ -310,10 +385,23 @@ ALTER TABLE `tbl_feedback`
   ADD KEY `tbl_feedback_ibfk_1` (`id_pelanggan`);
 
 --
+-- Indexes for table `tbl_kategori`
+--
+ALTER TABLE `tbl_kategori`
+  ADD PRIMARY KEY (`id_kategori`);
+
+--
 -- Indexes for table `tbl_kat_produk`
 --
 ALTER TABLE `tbl_kat_produk`
   ADD PRIMARY KEY (`id_kategori`);
+
+--
+-- Indexes for table `tbl_master_produk`
+--
+ALTER TABLE `tbl_master_produk`
+  ADD PRIMARY KEY (`ms_id_produk`),
+  ADD KEY `fk_kategori_idx` (`ms_id_kategori`);
 
 --
 -- Indexes for table `tbl_order`
@@ -356,7 +444,7 @@ ALTER TABLE `tbl_admin`
 -- AUTO_INCREMENT for table `tbl_detail_order`
 --
 ALTER TABLE `tbl_detail_order`
-  MODIFY `id_detail_order` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id_detail_order` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT for table `tbl_feedback`
@@ -365,16 +453,28 @@ ALTER TABLE `tbl_feedback`
   MODIFY `id_feedback` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
+-- AUTO_INCREMENT for table `tbl_kategori`
+--
+ALTER TABLE `tbl_kategori`
+  MODIFY `id_kategori` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `tbl_master_produk`
+--
+ALTER TABLE `tbl_master_produk`
+  MODIFY `ms_id_produk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `tbl_order`
 --
 ALTER TABLE `tbl_order`
-  MODIFY `id_order` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id_order` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT for table `tbl_pembayaran`
 --
 ALTER TABLE `tbl_pembayaran`
-  MODIFY `id_pembayaran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_pembayaran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- Constraints for dumped tables
@@ -385,6 +485,12 @@ ALTER TABLE `tbl_pembayaran`
 --
 ALTER TABLE `tbl_feedback`
   ADD CONSTRAINT `tbl_feedback_ibfk_1` FOREIGN KEY (`id_pelanggan`) REFERENCES `tbl_pelanggan` (`id_pelanggan`);
+
+--
+-- Constraints for table `tbl_master_produk`
+--
+ALTER TABLE `tbl_master_produk`
+  ADD CONSTRAINT `fk_kategori` FOREIGN KEY (`ms_id_kategori`) REFERENCES `tbl_kategori` (`id_kategori`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tbl_order`

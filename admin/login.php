@@ -1,206 +1,115 @@
 <?php
-    session_start();
-    include "../koneksi.php";
+session_start();
+include "../koneksi.php";
 ?>
 <!doctype html>
 <html lang="en">
-
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="assets/css/bootstrap.css">
-    <link rel="stylesheet" href="assets/icons/font-awesome/css/font-awesome.min.css">
-    <link rel="shortcut icon" href="assets/images/favicon.png">
-    <script src="assets/js/bootstrap.min.js"></script>
-    <script src="assets/js/sweetalert.min.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login - Supplier</title>
+  <link rel="shortcut icon" href="assets/images/logo.png">
 
-    <style>
-        body {
-            color: rgb(241, 241, 241);
-            background:rgb(255, 255, 255);
-            font-family: 'Source Sans Pro', sans-serif;
-            background-size: cover;
-        }
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <!-- SweetAlert -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        .form-control,
-        .form-control:focus,
-        .input-group-addon {
-            border-color: #e1e1e1;
-        }
-
-        .form-control,
-        .btn {
-            border-radius: 5px;
-
-        }
-
-        .signup-form {
-            width: 390px;
-            margin: 0 auto;
-            padding: 30px 0;
-            margin-top: 120px;
-
-        }
-
-        .signup-form form {
-            color: #999;
-            border-radius: 3px;
-            margin-bottom: 15px;
-            background: #fff;
-            background-color: rgba(0, 0, 0, 0.8);
-            padding-top: 30px;
-            padding-left: 30px;
-            padding-right: 30px;
-            padding-bottom: 1px;
-        }
-
-        .signup-form h2 {
-            color: white;
-            font-weight: bold;
-            margin-top: 0;
-            text-align: center;
-        }
-
-        .signup-form p {
-            text-align: center;
-        }
-
-        .signup-form hr {
-            border: 1px solid #3498db;
-        }
-
-        .signup-form .form-group {
-            margin-bottom: 20px;
-        }
-
-        .signup-form label {
-            font-weight: normal;
-            font-size: 13px;
-        }
-
-        .signup-form .form-control {
-            min-height: 38px;
-            box-shadow: none !important;
-            background-color: rgba(105, 105, 105, 0.6);
-            color: white;
-            border: none;
-        }
-
-        .signup-form .input-group-addon {
-            max-width: 42px;
-            text-align: center;
-            color: white;
-            background-color: #3498db;
-            border: none;
-        }
-
-        .signup-form .btn {
-            font-size: 16px;
-            font-weight: bold;
-            background: #3498db;
-            border: none;
-            width: 100%;
-        }
-
-        .signup-form .btn:hover,
-        .signup-form .btn:focus {
-            background: #0e6caa;
-            outline: none;
-        }
-
-        .signup-form a {
-            color: #fff;
-            text-decoration: underline;
-        }
-
-        .signup-form a:hover {
-            text-decoration: none;
-        }
-
-        .signup-form form a {
-            color: #3498db;
-            text-decoration: none;
-        }
-
-        .signup-form form a:hover {
-            text-decoration: underline;
-        }
-
-        .signup-form .fa {
-            font-size: 21px;
-        }
-
-        .signup-form .fa-paper-plane {
-            font-size: 18px;
-        }
-
-        .signup-form .fa-check {
-            color: #fff;
-            left: 17px;
-            top: 18px;
-            font-size: 7px;
-            position: absolute;
-        }
-
-        .text-center a {
-            color: #3498db;
-        }
-
-        .down {
-            margin-top: 30px;
-        }
-    </style>
-    <title>Log In</title>
+  <style>
+    body {
+        background: #f8f9fa;
+        font-family: 'Segoe UI', sans-serif;
+    }
+    .login-container {
+        max-width: 400px;
+        margin: 80px auto;
+        padding: 30px;
+        background-color: white;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        border-radius: 10px;
+    }
+    .form-control {
+        background-color: #f1f1f1;
+    }
+    .form-control:focus {
+        background-color: #fff;
+        box-shadow: none;
+        border-color: #0d6efd;
+    }
+    .login-header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+  </style>
 </head>
-
 <body>
-    <div class="signup-form">
-        <form action="" method="post">
-            <h2>Log In</h2>
-            <p>Please enter your account correctly!</p>
-            <hr>
-            <div class="form-group">
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                    <input type="text" class="form-control" name="u" placeholder="Username" id="username"
-                        required="required">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                    <input type="password" class="form-control" id="password" name="p" placeholder="Password"
-                        required="required">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="checkbox-inline">
-                    <input type="checkbox" /> Remember me
-                </label>
-            </div>
-            <div class="form-group">
-                 <button class="btn btn-primary btn-lg" name="login" id="submit">Login</button>
-            </div>
-        </form>
-        <?php
-                            if (isset($_POST['login'])) 
-                            {
-                                $ambil = $db->query("SELECT * FROM tbl_admin WHERE username = '".$_POST['u']."' AND password = '".$_POST['p']."'");
-                                $yangcocok = $ambil ->num_rows;
-                                if ($yangcocok==1) {
-                                    $_SESSION['tbl_admin']=$ambil->fetch_assoc();
-                                    echo "<script> swal('', 'Login Berhasil', 'success');</script>";
-                                    echo "<meta http-equiv='refresh' content='1;url=index.php'>";
-                                } 
-                                else{
-                                    echo "<script> swal('', 'Login Gagal', 'warning');</script>";
-                                    echo "<meta http-equiv='refresh' content='1;url=login.php'>";
-                                }
-                            }
-                        ?>
-                    </div>
-    </div>
-</body>
 
+<div class="login-container">
+    <div class="login-header">
+        <h3><i class="fa fa-user-circle"></i> Login Supplier</h3>
+        <p class="text-muted">Masukkan username dan password Anda</p>
+    </div>
+
+    <form method="POST">
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" name="u" id="username" required autofocus>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" name="p" id="password" required>
+        </div>
+
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="rememberMe">
+            <label class="form-check-label" for="rememberMe">Ingat saya</label>
+        </div>
+
+        <button type="submit" name="login" class="btn btn-primary w-100">Masuk</button>
+    </form>
+
+    <?php
+    if (isset($_POST['login'])) {
+        $username = $_POST['u'];
+        $password = $_POST['p'];
+
+        // Sementara masih langsung query, disarankan ganti ke prepared statement
+        $ambil = $db->query("SELECT * FROM tbl_admin WHERE username = '$username' AND password = '$password'");
+        if ($ambil->num_rows == 1) {
+            $_SESSION['tbl_admin'] = $ambil->fetch_assoc();
+            echo "<script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Login berhasil!',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = 'index.php?pages=dashboard';
+                });
+            </script>";
+        } else {
+            echo "<script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Username atau password salah!',
+                    timer: 1800,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = 'login.php';
+                });
+            </script>";
+        }
+    }
+    ?>
+</div>
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
 </html>

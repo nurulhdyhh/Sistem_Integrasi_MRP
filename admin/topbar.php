@@ -11,12 +11,6 @@
                             </div>
 
                             <ul class="list-inline float-right mb-0">
-                                <!-- Search -->
-                                <li class="list-inline-item dropdown notification-list">
-                                    <a class="nav-link waves-effect toggle-search" href="#"  data-target="#search-wrap">
-                                        <i class="mdi mdi-magnify noti-icon"></i>
-                                    </a>
-                                </li>
                                 <!-- Fullscreen -->
                                 <li class="list-inline-item dropdown notification-list hidden-xs-down">
                                     <a class="nav-link waves-effect" href="#" id="btn-fullscreen">
@@ -37,10 +31,30 @@
                                     </button>
                                 </li>
                                 <li class="hide-phone list-inline-item app-search">
-                                    <h3 class="page-title">Dashboard</h3>
+                                    <?php
+                                    $pageTitle = 'Dashboard';
+
+                                    if (isset($_GET['pages'])) {
+                                        $map = [
+                                            'dashboard' => 'Dashboard',
+                                            'produk' => 'Produk',
+                                            'tambah-produk' => 'Tambah Produk',
+                                            'ubah-produk' => 'Ubah Produk',
+                                            'tambah-kategori' => 'Kategori',
+                                            'hapus-kategori' => 'Kategori',
+                                            'pelanggan' => 'Pelanggan',
+                                            'order' => 'Order',
+                                            'detail-order' => 'Detail Order',
+                                            'pembayaran' => 'Pembayaran',
+                                            'logout' => 'Logout'
+                                        ];
+
+                                        $pageTitle = $map[$_GET['pages']] ?? ucwords(str_replace('-', ' ', $_GET['pages']));
+                                    }
+                                    ?>
+                                    <h3 class="page-title mb-0"><?= $pageTitle ?></h3>
                                 </li>
                             </ul>
-
                             <div class="clearfix"></div>
                         </nav>
 

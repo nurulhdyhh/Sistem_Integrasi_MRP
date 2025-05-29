@@ -1,57 +1,16 @@
 <?php
-if (isset($_GET['pages']))
-{
-    if ($_GET['pages'] == "dashboard")
-    {
-        include 'dashboard.php';
-    }
-    elseif ($_GET['pages'] == "produk")
-    {
-        include 'produk.php';
-    }
-    elseif ($_GET['pages'] == "tambah-produk")
-    {
-        include 'tambah-produk.php';
-    }
-    elseif ($_GET['pages'] == "ubah-produk")
-    {
-        include 'ubah-produk.php';
-    }
-    elseif ($_GET['pages'] == "hapus-produk")
-    {
-        include 'hapus-produk.php';
-    }
-    elseif ($_GET['pages'] == "tambah-kategori")
-    {
-        include 'tambah-kategori.php';
-    }
-     elseif ($_GET['pages'] == "hapus-kategori")
-    {
-        include 'hapus-kategori.php';
-    }
-    elseif ($_GET['pages'] == "pelanggan")
-    {
-        include 'pelanggan.php';
-    }
-    elseif ($_GET['pages'] == "order")
-    {
-        include 'order.php';
-    }
-    elseif ($_GET['pages'] == "detail-order")
-    {
-        include 'detail-order.php';
-    }
-    elseif ($_GET['pages'] == "pembayaran")
-    {
-        include 'pembayaran.php';
-    }
-    elseif ($_GET['pages'] == "logout")
-    {
-        include 'logout.php';
-    }
-}
-else
-{
-    include 'dashboard.php';
+$pages = [
+    "dashboard", "produk", "tambah-produk", "ubah-produk",
+    "hapus-produk", "tambah-kategori", "hapus-kategori",
+    "pelanggan", "order", "detail-order", "pembayaran", "logout"
+];
+
+$page = $_GET['pages'] ?? 'dashboard';
+$path = __DIR__ . "/pages/$page.php";
+
+if (in_array($page, $pages) && file_exists($path)) {
+    include $path;
+} else {
+    echo "<div class='alert alert-danger'>Halaman tidak ditemukan.</div>";
 }
 ?>

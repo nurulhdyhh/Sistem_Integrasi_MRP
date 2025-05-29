@@ -160,8 +160,8 @@ $dibatalkan = mysqli_fetch_assoc(mysqli_query($db, "SELECT COUNT(*) AS jml FROM 
                                 <td><?php echo $data['nama_bank']; ?></td>    
                                 <td>
                                     <?php
-                                    $totalDenganPajak = $data['total_order'] + $data['pajak'];
-                                    echo "Rp. " . number_format($totalDenganPajak);
+                                    $totalDenganOngkir = $data['total_order'] + $data['ongkir'];
+                                    echo "Rp. " . number_format($totalDenganOngkir);
                                     ?>
                                 </td>
 
